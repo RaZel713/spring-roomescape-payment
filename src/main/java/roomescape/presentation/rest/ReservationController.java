@@ -21,6 +21,7 @@ import roomescape.domain.user.User;
 import roomescape.presentation.auth.Authenticated;
 import roomescape.presentation.request.CreateReservationAdminRequest;
 import roomescape.presentation.request.CreateReservationRequest;
+import roomescape.presentation.response.PaymentResponse;
 import roomescape.presentation.response.ReservationResponse;
 
 @RestController
@@ -37,6 +38,8 @@ public class ReservationController {
     public ReservationResponse createReservationWithUserPrivileges(
             @Authenticated final User user, @RequestBody @Valid final CreateReservationRequest request
     ) {
+        PaymentResponse response = reservationService.method(request);
+
         Reservation reservation = reservationService.saveReservation(
                 user.id(), request.date(), request.timeId(), request.themeId());
 

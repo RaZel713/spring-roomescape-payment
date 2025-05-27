@@ -1,9 +1,19 @@
 package roomescape.application;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservationRepository;
 import roomescape.domain.reservation.ReservationSearchFilter;
@@ -18,6 +28,8 @@ import roomescape.domain.waiting.WaitingRepository;
 import roomescape.exception.AlreadyExistedException;
 import roomescape.exception.NotFoundException;
 import roomescape.infrastructure.ReservationSpecifications;
+import roomescape.presentation.request.CreateReservationRequest;
+import roomescape.presentation.response.PaymentResponse;
 
 @Service
 public class ReservationService {
@@ -42,10 +54,26 @@ public class ReservationService {
         this.userRepository = userRepository;
     }
 
-    public Reservation saveReservation(final long userId,
-                                       final LocalDate date,
-                                       final long timeId,
-                                       final long themeId) {
+    public PaymentResponse method(CreateReservationRequest request) {
+        RestClient restClient = RestClient.builder().baseUrl("https://api.tosspayments.com/").build();
+
+        String key = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6:";
+
+        String encodedKey = Base64.getEncoder().encodeToString(key.getBytes());
+
+        Map<String, Object> parts = new HashMap<>();
+
+        parts.put("paymentKey", request.paymentKey());
+        parts.put("orderId", request.orderId());
+        parts.put("amount", request.amount());
+
+        return restClient.post().uri("/v1/payments/confirm")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Basic " + encodedKey)
+                .body(parts).retrieve().body(PaymentResponse.class);
+    }
+
+    public Reservation saveReservation(final long userId, final LocalDate date, final long timeId, final long themeId) {
 
         User user = getUserById(userId);
         TimeSlot timeSlot = getTimeSlotById(timeId);
