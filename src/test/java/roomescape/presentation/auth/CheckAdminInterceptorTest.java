@@ -15,9 +15,12 @@ import roomescape.infrastructure.JwtTokenHandler;
 
 class CheckAdminInterceptorTest {
 
+    private static final String SECRET_KEY = "mytestsecretkey1234567890123456";
+    private static final long EXPIRATION_MILLIS = 3600000;
+
     private final MockHttpServletRequest request = new MockHttpServletRequest();
     private final MockHttpServletResponse response = new MockHttpServletResponse();
-    private final AuthenticationTokenHandler tokenProvider = new JwtTokenHandler();
+    private final AuthenticationTokenHandler tokenProvider = new JwtTokenHandler(SECRET_KEY, EXPIRATION_MILLIS);
     private final HandlerInterceptor interceptor = new CheckAdminInterceptor(tokenProvider);
 
     @Test

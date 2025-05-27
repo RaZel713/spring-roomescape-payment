@@ -11,7 +11,10 @@ import roomescape.domain.user.UserRole;
 
 class JwtTokenHandlerTest {
 
-    private final AuthenticationTokenHandler tokenProvider = new JwtTokenHandler();
+    private final String SECRET_KEY = "mytestsecretkey1234567890123456";
+    private final long EXPIRATION_MILLIS = 3600000;
+
+    private final AuthenticationTokenHandler tokenProvider = new JwtTokenHandler(SECRET_KEY, EXPIRATION_MILLIS);
 
     @Test
     @DisplayName("인증 정보로부터 토큰을 생성한다.")
