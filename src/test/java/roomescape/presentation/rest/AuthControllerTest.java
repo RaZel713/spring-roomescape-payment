@@ -23,8 +23,8 @@ class AuthControllerTest {
                 .extract().response().getDetailedCookies().getValue("token");
     }
 
-    @DisplayName("어드민 계정으로 로그인 한다")
     @Test
+    @DisplayName("어드민 계정으로 로그인 한다")
     void adminLogin() {
         var token = getToken("admin@email.com", "password");
 
@@ -35,8 +35,8 @@ class AuthControllerTest {
                 .then().statusCode(200);
     }
 
-    @DisplayName("사용자 계정으로 로그인 한다")
     @Test
+    @DisplayName("사용자 계정으로 로그인 한다")
     void userLogin() {
         final var token = getToken("user1@email.com", "password1");
 
@@ -47,8 +47,8 @@ class AuthControllerTest {
                 .then().statusCode(200);
     }
 
-    @DisplayName("잘못된 비밀 번호로 로그인 하는 경우 예외를 던진다")
     @Test
+    @DisplayName("잘못된 비밀 번호로 로그인 하는 경우 예외를 던진다")
     void adminLogin_WhenPasswordIsWrong() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -57,8 +57,8 @@ class AuthControllerTest {
                 .then().statusCode(401);
     }
 
-    @DisplayName("잘못된 이메일로 로그인 하는 경우 예외를 던진다")
     @Test
+    @DisplayName("잘못된 이메일로 로그인 하는 경우 예외를 던진다")
     void adminLogin_WhenEmailNotExist() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -67,8 +67,8 @@ class AuthControllerTest {
                 .then().statusCode(401);
     }
 
-    @DisplayName("로그아웃 시 토큰 쿠키가 삭제되고 메인 페이지로 리다이렉트 된다")
     @Test
+    @DisplayName("로그아웃 시 토큰 쿠키가 삭제되고 메인 페이지로 리다이렉트 된다")
     void logout() {
         var token = getToken("user1@email.com", "password1");
 
