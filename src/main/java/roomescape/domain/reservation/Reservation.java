@@ -50,14 +50,6 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public static Reservation ofExisting(final long id,
-                                         final User user,
-                                         final LocalDate date,
-                                         final TimeSlot timeSlot,
-                                         final Theme theme) {
-        return new Reservation(id, user, date, timeSlot, theme);
-    }
-
     public static Reservation register(final User user,
                                        final LocalDate date,
                                        final TimeSlot timeSlot,
