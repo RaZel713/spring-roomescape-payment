@@ -16,7 +16,7 @@ import roomescape.domain.timeslot.TimeSlot;
 import roomescape.domain.user.User;
 import roomescape.exception.BusinessRuleViolationException;
 
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Accessors(fluent = true)
 @ToString
@@ -25,6 +25,7 @@ public class Waiting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     @ManyToOne
     private User user;

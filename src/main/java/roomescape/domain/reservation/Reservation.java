@@ -17,7 +17,7 @@ import roomescape.domain.user.User;
 import roomescape.domain.waiting.Waiting;
 import roomescape.exception.BusinessRuleViolationException;
 
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Accessors(fluent = true)
 @ToString
@@ -26,6 +26,7 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     @ManyToOne
     private User user;

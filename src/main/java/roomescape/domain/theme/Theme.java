@@ -10,7 +10,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import roomescape.exception.BusinessRuleViolationException;
 
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Accessors(fluent = true)
 @ToString
@@ -22,6 +22,7 @@ public class Theme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     private String name;
     private String description;

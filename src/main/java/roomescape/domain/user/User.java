@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 import roomescape.exception.BusinessRuleViolationException;
 import roomescape.exception.InvalidInputException;
 
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Accessors(fluent = true)
 @ToString
@@ -27,6 +27,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
