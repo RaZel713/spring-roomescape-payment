@@ -36,14 +36,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    private void validateEmailNotRegistered(String email) {
-        boolean isEmailAlreadyRegistered = userRepository.existsByEmail(email);
-
-        if (isEmailAlreadyRegistered) {
-            throw new AlreadyExistedException("이미 해당 이메일로 가입된 사용자가 있습니다.");
-        }
-    }
-
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
@@ -62,6 +54,14 @@ public class UserService {
         userReservedRecordsResponses.addAll(reservedResponses);
         userReservedRecordsResponses.addAll(waitingResponses);
         return userReservedRecordsResponses;
+    }
+
+    private void validateEmailNotRegistered(String email) {
+        boolean isEmailAlreadyRegistered = userRepository.existsByEmail(email);
+
+        if (isEmailAlreadyRegistered) {
+            throw new AlreadyExistedException("이미 해당 이메일로 가입된 사용자가 있습니다.");
+        }
     }
 
     private void validateUserExists(long userId) {

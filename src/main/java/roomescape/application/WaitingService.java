@@ -9,7 +9,6 @@ import roomescape.domain.theme.ThemeRepository;
 import roomescape.domain.timeslot.TimeSlot;
 import roomescape.domain.timeslot.TimeSlotRepository;
 import roomescape.domain.user.User;
-import roomescape.domain.user.UserRepository;
 import roomescape.domain.waiting.Waiting;
 import roomescape.domain.waiting.WaitingRepository;
 import roomescape.exception.AlreadyExistedException;
@@ -23,20 +22,17 @@ public class WaitingService {
     private final WaitingRepository waitingRepository;
     private final TimeSlotRepository timeSlotRepository;
     private final ThemeRepository themeRepository;
-    private final UserRepository userRepository;
 
     public WaitingService(
             final ReservationRepository reservationRepository,
             final WaitingRepository waitingRepository,
             final TimeSlotRepository timeSlotRepository,
-            final ThemeRepository themeRepository,
-            final UserRepository userRepository
+            final ThemeRepository themeRepository
     ) {
         this.reservationRepository = reservationRepository;
         this.waitingRepository = waitingRepository;
         this.timeSlotRepository = timeSlotRepository;
         this.themeRepository = themeRepository;
-        this.userRepository = userRepository;
     }
 
     public Waiting saveWaiting(final User user,
@@ -53,14 +49,14 @@ public class WaitingService {
         return waitingRepository.save(waiting);
     }
 
-    private TimeSlot getTimeSlotById(final long timeId) {
-        return timeSlotRepository.findById(timeId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 타임 슬롯입니다."));
+    public List<Waiting> findAllWaitings() {
+        return waitingRepository.findAll();
     }
 
-    private Theme getThemeById(final long themeId) {
-        return themeRepository.findById(themeId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 테마입니다."));
+    public void removeById(final long id) {
+        validateWaitingExists(id);
+
+        waitingRepository.deleteById(id);
     }
 
     private void validateDuplicateWaiting(final LocalDate date,
@@ -87,21 +83,21 @@ public class WaitingService {
         }
     }
 
-    public List<Waiting> findAllWaitings() {
-        return waitingRepository.findAll();
-    }
-
-    public void removeById(final long id) {
-        validateWaitingExists(id);
-
-        waitingRepository.deleteById(id);
-    }
-
     private void validateWaitingExists(long id) {
         boolean isWaitingExisted = waitingRepository.existsById(id);
 
         if (!isWaitingExisted) {
             throw new NotFoundException("존재하지 않는 예약 대기입니다.");
         }
+    }
+
+    private TimeSlot getTimeSlotById(final long timeId) {
+        return timeSlotRepository.findById(timeId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 타임 슬롯입니다."));
+    }
+
+    private Theme getThemeById(final long themeId) {
+        return themeRepository.findById(themeId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 테마입니다."));
     }
 }

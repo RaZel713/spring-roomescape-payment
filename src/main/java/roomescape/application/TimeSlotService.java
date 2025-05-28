@@ -45,14 +45,6 @@ public class TimeSlotService {
                 .toList();
     }
 
-    private List<TimeSlot> findReservedTimeSlots(LocalDate date, long themeId) {
-        List<Reservation> reservations = reservationRepository.findByDateAndThemeId(date, themeId);
-
-        return reservations.stream()
-                .map(Reservation::timeSlot)
-                .toList();
-    }
-
     public void removeById(final long id) {
         validateTimSlotNotInUse(id);
         validateTimeSlotExists(id);
@@ -74,5 +66,13 @@ public class TimeSlotService {
         if (!isTimeSlotExists) {
             throw new NotFoundException("존재하지 않는 타임슬롯입니다.");
         }
+    }
+
+    private List<TimeSlot> findReservedTimeSlots(LocalDate date, long themeId) {
+        List<Reservation> reservations = reservationRepository.findByDateAndThemeId(date, themeId);
+
+        return reservations.stream()
+                .map(Reservation::timeSlot)
+                .toList();
     }
 }

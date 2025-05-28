@@ -54,6 +54,28 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    public List<Reservation> findReservationsByFilter(ReservationSearchFilter filter) {
+        return reservationRepository.findAll(ReservationSpecifications.byFilter(filter));
+    }
+
+    public void removeById(final long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 예약입니다."));
+
+        approveNextWaitingIfExists(reservation);
+
+        reservationRepository.deleteById(id);
+    }
+
+    private void validateDuplicateReservation(final LocalDate date, final TimeSlot timeSlot, final Theme theme) {
+        Optional<Reservation> reservation =
+                reservationRepository.findByDateAndTimeSlotIdAndThemeId(date, timeSlot.id(), theme.id());
+
+        if (reservation.isPresent()) {
+            throw new AlreadyExistedException("이미 예약된 날짜, 시간, 테마에 대한 예약은 불가능합니다.");
+        }
+    }
+
     private User getUserById(final long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
@@ -67,28 +89,6 @@ public class ReservationService {
     private Theme getThemeById(final long themeId) {
         return themeRepository.findById(themeId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 테마입니다."));
-    }
-
-    private void validateDuplicateReservation(final LocalDate date, final TimeSlot timeSlot, final Theme theme) {
-        Optional<Reservation> reservation =
-                reservationRepository.findByDateAndTimeSlotIdAndThemeId(date, timeSlot.id(), theme.id());
-
-        if (reservation.isPresent()) {
-            throw new AlreadyExistedException("이미 예약된 날짜, 시간, 테마에 대한 예약은 불가능합니다.");
-        }
-    }
-
-    public List<Reservation> findReservationsByFilter(ReservationSearchFilter filter) {
-        return reservationRepository.findAll(ReservationSpecifications.byFilter(filter));
-    }
-
-    public void removeById(final long id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 예약입니다."));
-
-        approveNextWaitingIfExists(reservation);
-
-        reservationRepository.deleteById(id);
     }
 
     private void approveNextWaitingIfExists(Reservation reservation) {
