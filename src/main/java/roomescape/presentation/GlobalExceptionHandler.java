@@ -33,6 +33,7 @@ import roomescape.exception.BusinessRuleViolationException;
 import roomescape.exception.InUseException;
 import roomescape.exception.InvalidInputException;
 import roomescape.exception.NotFoundException;
+import roomescape.exception.PaymentException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -104,6 +105,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(code = BAD_REQUEST)
     public ProblemDetail handleInvalidInput(final InvalidInputException ex) {
         return createProblemDetail(BAD_REQUEST, "올바르지 못한 입력입니다.", ex.getMessage());
+    }
+
+    @ExceptionHandler(PaymentException.class)
+    public ProblemDetail handlePaymentException(final PaymentException ex) {
+        return createProblemDetail(ex.getErrorCode().getStatusCode(), "결제 처리 중 오류가 발생했습니다.", ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
