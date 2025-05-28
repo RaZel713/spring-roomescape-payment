@@ -49,8 +49,7 @@ public class TossPaymentClient implements PaymentClient {
         return restClient.post().uri(TOSS_PAYMENT_CONFIRM_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, SECRET_KEY_PREFIX + encodedKey)
-                .body(paymentInfo).retrieve().body(Payment.class)
-                ;
+                .body(paymentInfo).retrieve().body(Payment.class);
     }
 
     private String getEncodedKey() {
