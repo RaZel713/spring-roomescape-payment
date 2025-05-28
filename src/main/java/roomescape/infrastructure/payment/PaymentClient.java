@@ -1,4 +1,4 @@
-package roomescape.infrastructure;
+package roomescape.infrastructure.payment;
 
 import roomescape.application.request.PaymentInfo;
 import roomescape.domain.payment.Payment;

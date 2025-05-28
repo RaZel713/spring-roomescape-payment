@@ -1,4 +1,4 @@
-package roomescape.infrastructure;
+package roomescape.infrastructure.payment;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -11,7 +11,6 @@ import org.springframework.web.client.RestClient;
 import roomescape.application.request.PaymentInfo;
 import roomescape.application.response.TossErrorResponse;
 import roomescape.domain.payment.Payment;
-import roomescape.exception.PaymentErrorCode;
 import roomescape.exception.PaymentException;
 
 @Component

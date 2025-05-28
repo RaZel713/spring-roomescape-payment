@@ -20,9 +20,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import roomescape.application.request.PaymentInfo;
 import roomescape.domain.payment.Payment;
-import roomescape.exception.PaymentErrorCode;
 import roomescape.exception.PaymentException;
-import roomescape.infrastructure.PaymentClient;
+import roomescape.infrastructure.payment.PaymentClient;
+import roomescape.infrastructure.payment.PaymentErrorCode;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -34,7 +34,7 @@ class ReservationControllerTest {
 
     @LocalServerPort
     int port;
-    
+
     @MockBean
     private PaymentClient paymentClient;
 

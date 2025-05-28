@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import roomescape.application.request.PaymentInfo;
 import roomescape.domain.payment.Payment;
 import roomescape.domain.payment.PaymentRepository;
-import roomescape.infrastructure.PaymentClient;
+import roomescape.infrastructure.payment.PaymentClient;
 
 @Service
 public class PaymentService {

@@ -1,4 +1,4 @@
-package roomescape.exception;
+package roomescape.infrastructure.payment;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
