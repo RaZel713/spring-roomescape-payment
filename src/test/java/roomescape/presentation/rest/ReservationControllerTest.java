@@ -26,18 +26,17 @@ import roomescape.infrastructure.PaymentClient;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ReservationControllerTest {
 
-    @MockBean
-    private PaymentClient paymentClient;
-
     private static final Map<String, String> RESERVATION_BODY = Map.of("date", "3000-03-17", "timeId", "1", "themeId",
             "1", "memberId", "2", "paymentKey", "paymentKey", "orderId", "orderId", "amount", "1000");
+    @MockBean
+    private PaymentClient paymentClient;
 
     @Test
     @DisplayName("예약 추가 요청시, id를 포함한 예약 내용과 CREATED를 응답한다")
     void createReservation() {
 
         PaymentInfo paymentInfo = new PaymentInfo("paymentKey", "orderId", 1000);
-        Payment payment = new Payment("paymentKey", "orderId", "테스트 방탈출 예약 결제 1건", 1000);
+        Payment payment = Payment.register("paymentKey", "orderId", "테스트 방탈출 예약 결제 1건", 1000);
 
         given(paymentClient.confirmPayment(paymentInfo)).willReturn(payment);
 
@@ -65,7 +64,8 @@ class ReservationControllerTest {
 
         RestAssured.given().log().all().contentType(ContentType.JSON).cookie("token", token) // 쿠키로 인증 정보 전달
                 .body(RESERVATION_BODY).when().post("/reservations").then().log().all()
-                .statusCode(errorCode.getStatusCode().value()).body("message", Matchers.equalTo(errorCode.getMessage()));
+                .statusCode(errorCode.getStatusCode().value())
+                .body("message", Matchers.equalTo(errorCode.getMessage()));
     }
 
     @Test
