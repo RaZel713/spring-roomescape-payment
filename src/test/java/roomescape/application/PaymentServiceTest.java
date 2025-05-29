@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import roomescape.application.request.PaymentInfo;
+import roomescape.application.response.PaymentResponse;
 import roomescape.domain.payment.Payment;
 import roomescape.domain.payment.PaymentRepository;
 import roomescape.exception.PaymentException;
@@ -42,7 +43,14 @@ class PaymentServiceTest {
                 1000
         );
 
-        when(paymentClient.confirmPayment(paymentInfo)).thenReturn(payment);
+        PaymentResponse paymentResponse = new PaymentResponse(
+                "test_payment_key",
+                "test_order_id",
+                "테스트 결제",
+                1000
+        );
+
+        when(paymentClient.confirmPayment(paymentInfo)).thenReturn(paymentResponse);
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
 
         // when
