@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import roomescape.application.request.PaymentInfo;
-import roomescape.domain.payment.Payment;
+import roomescape.application.response.PaymentResponse;
 import roomescape.exception.PaymentException;
 import roomescape.infrastructure.payment.PaymentClient;
 import roomescape.infrastructure.payment.PaymentErrorCode;
@@ -47,17 +47,17 @@ class ReservationControllerTest {
     @DisplayName("예약 추가 요청시, id를 포함한 예약 내용과 CREATED를 응답한다")
     void createReservation() {
         PaymentInfo paymentInfo = new PaymentInfo("paymentKey", "orderId", 1000);
-        Payment payment = Payment.register("paymentKey", "orderId", "테스트 방탈출 예약 결제 1건", 1000);
+        PaymentResponse response = new PaymentResponse("paymentKey", "orderId", "테스트 방탈출 예약 결제 1건", 1000);
 
-        given(paymentClient.confirmPayment(paymentInfo)).willReturn(payment);
+        given(paymentClient.confirmPayment(paymentInfo)).willReturn(response);
 
         var token = RestAssured.given().contentType(ContentType.JSON)
                 .body(Map.of("email", "user1@email.com", "password", "password1")).when().post("/login").then()
                 .statusCode(200).extract().response().getDetailedCookies().getValue("token");
 
-        RestAssured.given().log().all().contentType(ContentType.JSON).cookie("token", token)
-                .body(RESERVATION_BODY).when().post("/reservations").then().log().all()
-                .statusCode(HttpStatus.CREATED.value()).body("date", Matchers.equalTo("3000-03-17"));
+        RestAssured.given().log().all().contentType(ContentType.JSON).cookie("token", token).body(RESERVATION_BODY)
+                .when().post("/reservations").then().log().all().statusCode(HttpStatus.CREATED.value())
+                .body("date", Matchers.equalTo("3000-03-17"));
     }
 
     @EnumSource(PaymentErrorCode.class)
@@ -72,17 +72,16 @@ class ReservationControllerTest {
                 .body(Map.of("email", "user1@email.com", "password", "password1")).when().post("/login").then()
                 .statusCode(200).extract().response().getDetailedCookies().getValue("token");
 
-        RestAssured.given().log().all().contentType(ContentType.JSON).cookie("token", token)
-                .body(RESERVATION_BODY).when().post("/reservations").then().log().all()
-                .statusCode(errorCode.getStatusCode().value())
+        RestAssured.given().log().all().contentType(ContentType.JSON).cookie("token", token).body(RESERVATION_BODY)
+                .when().post("/reservations").then().log().all().statusCode(errorCode.getStatusCode().value())
                 .body("message", Matchers.equalTo(errorCode.getMessage()));
     }
 
     @Test
     @DisplayName("예약 조회 요청시, 존재하는 모든 예약과 OK를 응답한다")
     void findReservations() {
-        RestAssured.given().log().all().when().get("/reservations")
-                .then().log().all().statusCode(HttpStatus.OK.value()).body("size()", Matchers.is(3));
+        RestAssured.given().log().all().when().get("/reservations").then().log().all().statusCode(HttpStatus.OK.value())
+                .body("size()", Matchers.is(3));
     }
 
     @Test

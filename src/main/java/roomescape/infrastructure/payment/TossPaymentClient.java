@@ -35,10 +35,9 @@ public class TossPaymentClient implements PaymentClient {
         this.restClient = getRestClient(secretKey);
     }
 
-    public Payment confirmPayment(PaymentInfo paymentInfo) {
-        return restClient.post().uri(TOSS_PAYMENT_CONFIRM_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(paymentInfo).retrieve().body(Payment.class);
+    public PaymentResponse confirmPayment(PaymentInfo paymentInfo) {
+        return restClient.post().uri(TOSS_PAYMENT_CONFIRM_URI).contentType(MediaType.APPLICATION_JSON).body(paymentInfo)
+                .retrieve().body(PaymentResponse.class);
     }
 
     private RestClient getRestClient(String secretKey) {

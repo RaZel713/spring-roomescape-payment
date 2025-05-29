@@ -1,9 +1,9 @@
 package roomescape.infrastructure.payment;
 
 import roomescape.application.request.PaymentInfo;
-import roomescape.domain.payment.Payment;
+import roomescape.application.response.PaymentResponse;
 
 public interface PaymentClient {
 
-    Payment confirmPayment(PaymentInfo paymentInfo);
+    PaymentResponse confirmPayment(PaymentInfo paymentInfo);
 }
