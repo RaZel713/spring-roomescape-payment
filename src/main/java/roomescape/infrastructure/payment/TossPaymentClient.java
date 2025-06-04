@@ -39,11 +39,17 @@ public class TossPaymentClient implements PaymentClient {
         return builder.baseUrl(TOSS_BASE_URL)
                 .defaultStatusHandler(status -> status.is4xxClientError() || status.is5xxServerError(),
                         (request, response) -> {
-                            TossErrorResponse error = objectMapper.readValue(response.getBody(),
-                                    TossErrorResponse.class);
-                            PaymentErrorCode code = PaymentErrorCode.from(error.code());
-                            throw new PaymentException(code);
-                        }).defaultHeader(AUTHORIZATION, SECRET_KEY_PREFIX + encodedKey).build();
+                            try {
+                                TossErrorResponse error = objectMapper.readValue(response.getBody(),
+                                        TossErrorResponse.class);
+                                PaymentErrorCode code = PaymentErrorCode.from(error.code());
+                                throw new PaymentException(code);
+                            } catch (Exception e) {
+                                throw new PaymentException(PaymentErrorCode.UNKNOWN);
+                            }
+                        })
+                .defaultHeader(AUTHORIZATION, SECRET_KEY_PREFIX + encodedKey)
+                .build();
     }
 
     private String getEncodedKey(String key) {
