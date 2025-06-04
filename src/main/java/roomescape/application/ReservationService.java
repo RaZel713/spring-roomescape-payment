@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import roomescape.application.request.PaymentInfo;
+import roomescape.domain.payment.Payment;
 import roomescape.domain.reservation.Reservation;
 import roomescape.domain.reservation.ReservationRepository;
 import roomescape.domain.reservation.ReservationSearchFilter;
@@ -22,6 +24,7 @@ import roomescape.infrastructure.ReservationSpecifications;
 @Service
 public class ReservationService {
 
+    private final PaymentService paymentService;
     private final ReservationRepository reservationRepository;
     private final WaitingRepository waitingRepository;
     private final TimeSlotRepository timeSlotRepository;
@@ -29,12 +32,14 @@ public class ReservationService {
     private final UserRepository userRepository;
 
     public ReservationService(
+            final PaymentService paymentService,
             final ReservationRepository reservationRepository,
             final WaitingRepository waitingRepository,
             final TimeSlotRepository timeSlotRepository,
             final ThemeRepository themeRepository,
             final UserRepository userRepository
     ) {
+        this.paymentService = paymentService;
         this.reservationRepository = reservationRepository;
         this.waitingRepository = waitingRepository;
         this.timeSlotRepository = timeSlotRepository;
@@ -50,6 +55,24 @@ public class ReservationService {
         validateDuplicateReservation(date, timeSlot, theme);
 
         Reservation reservation = Reservation.register(user, date, timeSlot, theme);
+
+        return reservationRepository.save(reservation);
+    }
+
+    public Reservation saveReservationWithUserPrivileges(final PaymentInfo paymentInfo,
+                                                         final long userId,
+                                                         final LocalDate date,
+                                                         final long timeId,
+                                                         final long themeId) {
+
+        User user = getUserById(userId);
+        TimeSlot timeSlot = getTimeSlotById(timeId);
+        Theme theme = getThemeById(themeId);
+        validateDuplicateReservation(date, timeSlot, theme);
+
+        Reservation reservation = Reservation.register(user, date, timeSlot, theme);
+
+        Payment payment = paymentService.savePayment(paymentInfo);
 
         return reservationRepository.save(reservation);
     }
