@@ -1,5 +1,6 @@
 package roomescape.application;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class WaitingService {
         this.themeRepository = themeRepository;
     }
 
+    @Transactional
     public Waiting saveWaiting(final User user,
                                final LocalDate date,
                                final long timeId,
@@ -49,10 +51,12 @@ public class WaitingService {
         return waitingRepository.save(waiting);
     }
 
+    @Transactional(readOnly = true)
     public List<Waiting> findAllWaitings() {
         return waitingRepository.findAll();
     }
 
+    @Transactional
     public void removeById(final long id) {
         validateWaitingExists(id);
 

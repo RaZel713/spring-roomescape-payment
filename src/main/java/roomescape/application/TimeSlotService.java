@@ -1,5 +1,6 @@
 package roomescape.application;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -26,16 +27,19 @@ public class TimeSlotService {
         this.timeSlotRepository = timeSlotRepository;
     }
 
+    @Transactional
     public TimeSlot saveTimeSlot(final LocalTime startAt) {
         TimeSlot timeSlot = TimeSlot.register(startAt);
 
         return timeSlotRepository.save(timeSlot);
     }
 
+    @Transactional(readOnly = true)
     public List<TimeSlot> findAllTimeSlots() {
         return timeSlotRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<AvailableTimeSlot> findAvailableTimeSlots(final LocalDate date, final long themeId) {
         List<TimeSlot> reservedTimeSlots = findReservedTimeSlots(date, themeId);
         List<TimeSlot> allTimeSlots = timeSlotRepository.findAll();
@@ -45,6 +49,7 @@ public class TimeSlotService {
                 .toList();
     }
 
+    @Transactional
     public void removeById(final long id) {
         validateTimSlotNotInUse(id);
         validateTimeSlotExists(id);

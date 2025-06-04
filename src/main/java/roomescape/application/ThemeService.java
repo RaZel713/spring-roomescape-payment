@@ -1,5 +1,6 @@
 package roomescape.application;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +28,18 @@ public class ThemeService {
         this.themeRepository = themeRepository;
     }
 
+    @Transactional
     public Theme saveTheme(final String name, final String description, final String thumbnail) {
         Theme theme = Theme.register(name, description, thumbnail);
         return themeRepository.save(theme);
     }
 
+    @Transactional(readOnly = true)
     public List<Theme> findAllThemes() {
         return themeRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Theme> findPopularThemes(final LocalDate startDate, final LocalDate endDate, final int count) {
         int finalCount = Math.min(count, MAX_THEME_FETCH_COUNT);
         Pageable pageable = PageRequest.of(0, finalCount);
@@ -43,6 +47,7 @@ public class ThemeService {
         return themeRepository.findRankingByPeriod(startDate, endDate, pageable);
     }
 
+    @Transactional
     public void removeById(final long id) {
         validateThemeNotInUse(id);
         validateThemeExists(id);

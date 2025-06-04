@@ -1,5 +1,6 @@
 package roomescape.application;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,7 @@ public class ReservationService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public Reservation saveReservation(final long userId, final LocalDate date, final long timeId, final long themeId) {
 
         User user = getUserById(userId);
@@ -59,6 +61,7 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    @Transactional
     public Reservation saveReservationWithUserPrivileges(final PaymentInfo paymentInfo,
                                                          final long userId,
                                                          final LocalDate date,
@@ -77,10 +80,12 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    @Transactional(readOnly = true)
     public List<Reservation> findReservationsByFilter(ReservationSearchFilter filter) {
         return reservationRepository.findAll(ReservationSpecifications.byFilter(filter));
     }
 
+    @Transactional
     public void removeById(final long id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 예약입니다."));

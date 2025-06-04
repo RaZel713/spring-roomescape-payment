@@ -1,5 +1,6 @@
 package roomescape.application;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class UserService {
         this.waitingRepository = waitingRepository;
     }
 
+    @Transactional
     public User saveUser(final String email, final String password, final String name) {
         validateEmailNotRegistered(email);
         User user = User.register(name, email, password);
@@ -36,10 +38,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<UserReservedRecordsResponse> findTotalRecordByUserId(Long userId) {
         validateUserExists(userId);
         List<Reservation> reservations = reservationRepository.findByUserId(userId);
