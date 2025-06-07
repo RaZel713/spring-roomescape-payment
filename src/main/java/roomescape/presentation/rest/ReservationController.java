@@ -32,6 +32,17 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+    @PostMapping("/admin/reservations")
+    @ResponseStatus(CREATED)
+    public ReservationResponse createReservationWithAdminPrivileges(
+            @RequestBody @Valid final CreateReservationAdminRequest request
+    ) {
+        Reservation reservation = reservationService.saveReservationWithAdminPrivileges(
+                request.userId(), request.date(), request.timeId(), request.themeId());
+
+        return ReservationResponse.fromReservation(reservation);
+    }
+
     @PostMapping("/reservations")
     @ResponseStatus(CREATED)
     public ReservationResponse createReservationWithUserPrivileges(
@@ -39,17 +50,6 @@ public class ReservationController {
     ) {
         Reservation reservation = reservationService.saveReservationWithUserPrivileges(
                 request.toPaymentInfo(), user.id(), request.date(), request.timeId(), request.themeId());
-
-        return ReservationResponse.fromReservation(reservation);
-    }
-
-    @PostMapping("/admin/reservations")
-    @ResponseStatus(CREATED)
-    public ReservationResponse createReservationWithAdminPrivileges(
-            @RequestBody @Valid final CreateReservationAdminRequest request
-    ) {
-        Reservation reservation = reservationService.saveReservation(
-                request.userId(), request.date(), request.timeId(), request.themeId());
 
         return ReservationResponse.fromReservation(reservation);
     }
