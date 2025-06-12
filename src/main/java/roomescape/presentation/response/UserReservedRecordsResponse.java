@@ -31,7 +31,7 @@ public record UserReservedRecordsResponse(
                 ThemeResponse.fromTheme(reservation.theme()),
                 reservation.date(),
                 TimeSlotResponse.fromTimeSlot(reservation.timeSlot()),
-                "예약",
+                null,
                 PaymentResponse.fromPayment(reservation.payment())
         );
     }
@@ -52,7 +52,7 @@ public record UserReservedRecordsResponse(
                 ThemeResponse.fromTheme(waitingWithRank.waiting().theme()),
                 waitingWithRank.waiting().date(),
                 TimeSlotResponse.fromTimeSlot(waitingWithRank.waiting().timeSlot()),
-                waitingWithRank.rank() + "번째 예약대기",
+                String.valueOf(waitingWithRank.rank()),
                 null
         );
     }

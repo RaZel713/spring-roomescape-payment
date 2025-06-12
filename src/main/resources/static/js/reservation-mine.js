@@ -22,9 +22,9 @@ function render(data) {
         const theme = item.theme.name;
         const date = item.date;
         const time = item.time.startAt;
-        const status = item.status;
-        const paymentKey = item.payment.paymentKey;
-        const amount = item.payment.totalAmount;
+        const status = item.status === null ? '예약' : `${item.status}번째 예약대기`;
+        const paymentKey = item.payment?.paymentKey;
+        const amount = item.payment?.totalAmount;
 
         row.insertCell(0).textContent = theme;
         row.insertCell(1).textContent = date;
