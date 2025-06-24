@@ -1,0 +1,59 @@
+package roomescape.presentation.response;
+
+import java.time.LocalDate;
+import java.util.List;
+import roomescape.application.response.PaymentResponse;
+import roomescape.domain.reservation.Reservation;
+import roomescape.domain.waiting.WaitingWithRank;
+
+public record UserReservedRecordsResponse(
+        long id,
+        ThemeResponse theme,
+        LocalDate date,
+        TimeSlotResponse time,
+        String status,
+        PaymentResponse payment
+) {
+
+    public static List<UserReservedRecordsResponse> fromReservations(
+            final List<Reservation> reservations
+    ) {
+        return reservations.stream()
+                .map(UserReservedRecordsResponse::fromReservation)
+                .toList();
+    }
+
+    private static UserReservedRecordsResponse fromReservation(
+            final Reservation reservation
+    ) {
+        return new UserReservedRecordsResponse(
+                reservation.id(),
+                ThemeResponse.fromTheme(reservation.theme()),
+                reservation.date(),
+                TimeSlotResponse.fromTimeSlot(reservation.timeSlot()),
+                null,
+                PaymentResponse.fromPayment(reservation.payment())
+        );
+    }
+
+    public static List<UserReservedRecordsResponse> fromWaitingsWithRank(
+            final List<WaitingWithRank> waitingsWithRanks
+    ) {
+        return waitingsWithRanks.stream()
+                .map(UserReservedRecordsResponse::fromWaitingWithRank)
+                .toList();
+    }
+
+    private static UserReservedRecordsResponse fromWaitingWithRank(
+            final WaitingWithRank waitingWithRank
+    ) {
+        return new UserReservedRecordsResponse(
+                waitingWithRank.waiting().id(),
+                ThemeResponse.fromTheme(waitingWithRank.waiting().theme()),
+                waitingWithRank.waiting().date(),
+                TimeSlotResponse.fromTimeSlot(waitingWithRank.waiting().timeSlot()),
+                String.valueOf(waitingWithRank.rank()),
+                null
+        );
+    }
+}
